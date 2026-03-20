@@ -1,0 +1,6 @@
+{
+  "routes": [
+    { "src": "/elections", "dest": "/elections.html" },
+    { "src": "/admin-dashboard", "dest": "/admin-dashboard.html" }
+  ]
+}
