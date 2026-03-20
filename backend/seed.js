@@ -23,42 +23,6 @@ async function seed() {
     const adminPassword = await bcrypt.hash("Admin@123", 10);
     const voterPassword = await bcrypt.hash("Voter@123", 10);
 
-    const [admin, voter, pendingVoter] = await User.create([
-      {
-        fullName: "System Administrator",
-        email: "admin@smartvote.com",
-        phone: "9000000001",
-        dob: new Date("1988-03-15"),
-        age: 38,
-        gender: "male",
-        password: adminPassword,
-        role: "admin",
-        isVerified: true
-      },
-      {
-        fullName: "Priya Verma",
-        email: "voter@smartvote.com",
-        phone: "9000000002",
-        dob: new Date("2001-08-21"),
-        age: 24,
-        gender: "female",
-        password: voterPassword,
-        role: "voter",
-        isVerified: true
-      },
-      {
-        fullName: "Rahul Nair",
-        email: "pending@smartvote.com",
-        phone: "9000000003",
-        dob: new Date("2000-01-09"),
-        age: 25,
-        gender: "male",
-        password: voterPassword,
-        role: "voter",
-        isVerified: false
-      }
-    ]);
-
     const [activeElection, upcomingElection, endedElection] = await Election.create([
       {
         title: "National Youth Council Election",
@@ -80,6 +44,44 @@ async function seed() {
         date: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000),
         type: "University",
         status: "Ended"
+      }
+    ]);
+
+    const [admin, voter, pendingVoter] = await User.create([
+      {
+        fullName: "System Administrator",
+        email: "admin@smartvote.com",
+        phone: "9000000001",
+        dob: new Date("1988-03-15"),
+        age: 38,
+        gender: "male",
+        password: adminPassword,
+        role: "admin",
+        isVerified: true
+      },
+      {
+        fullName: "Priya Verma",
+        email: "voter@smartvote.com",
+        phone: "9000000002",
+        dob: new Date("2001-08-21"),
+        age: 24,
+        gender: "female",
+        password: voterPassword,
+        role: "voter",
+        electionId: activeElection._id,
+        isVerified: true
+      },
+      {
+        fullName: "Rahul Nair",
+        email: "pending@smartvote.com",
+        phone: "9000000003",
+        dob: new Date("2000-01-09"),
+        age: 25,
+        gender: "male",
+        password: voterPassword,
+        role: "voter",
+        electionId: upcomingElection._id,
+        isVerified: false
       }
     ]);
 

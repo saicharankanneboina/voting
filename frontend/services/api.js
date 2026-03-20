@@ -61,6 +61,10 @@ export const api = {
   getAdminStats() {
     return request("/admin/stats");
   },
+  getElectionStats(electionId = "") {
+    const query = electionId ? `?electionId=${encodeURIComponent(electionId)}` : "";
+    return request(`/admin/election-stats${query}`);
+  },
   createElection(payload) {
     return request("/admin/elections", { method: "POST", body: JSON.stringify(payload) });
   },

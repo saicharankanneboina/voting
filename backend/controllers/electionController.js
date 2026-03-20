@@ -41,8 +41,43 @@ exports.getAllElections = async (req, res) => {
 
 exports.getCandidatesByElection = async (req, res) => {
   try {
-    const candidates = await Candidate.find({ electionId: req.params.electionId }).sort({ name: 1 });
-    res.json({ success: true, data: candidates });
+    const election = await Election.findById(req.params.electionId).select("startDate endDate status");
+
+    if (!election) {
+      return res.status(404).json({ success: false, message: "Election not found." });
+    }
+
+    const now = new Date();
+    const startDate = election.startDate ? new Date(election.startDate) : null;
+    const endDate = election.endDate ? new Date(election.endDate) : null;
+
+    let electionState = "live";
+
+    if (startDate && now < startDate) {
+      electionState = "upcoming";
+    } else if (endDate && now > endDate) {
+      electionState = "ended";
+    } else if (!startDate || !endDate) {
+      const legacyStatus = (election.status || "").toLowerCase();
+      if (legacyStatus === "upcoming") {
+        electionState = "upcoming";
+      } else if (legacyStatus === "ended") {
+        electionState = "ended";
+      }
+    }
+
+    const projection =
+      electionState === "ended"
+        ? { name: 1, symbol: 1, votes: 1 }
+        : { name: 1, symbol: 1 };
+
+    const candidates = await Candidate.find({ electionId: req.params.electionId }, projection).sort({ name: 1 }).lean();
+
+    res.json({
+      success: true,
+      electionState,
+      data: candidates
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: "Failed to fetch candidates." });
   }

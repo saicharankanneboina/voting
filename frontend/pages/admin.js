@@ -1,21 +1,15 @@
-import { showToast } from "../services/api.js";
+import { api, showToast } from "../services/api.js";
 import { renderNavbar } from "../components/navbar.js";
 
 const statCards = [
-  { key: "totalElections", label: "Total Elections" },
+  { key: "electionName", label: "Election Name" },
   { key: "totalCandidates", label: "Total Candidates" },
   { key: "registeredVoters", label: "Registered Voters" },
-  { key: "totalVotesCast", label: "Total Votes Cast" }
+  { key: "totalVotesCast", label: "Total Votes Cast" },
+  { key: "winnerText", label: "Winner" }
 ];
 
-const actionCards = [
-  { title: "Manage Elections", copy: "Create, update, and control election states." },
-  { title: "Manage Candidates", copy: "Add candidates and prepare ballots quickly." },
-  { title: "Verify Voters", copy: "Approve new voter registrations before voting opens." },
-  { title: "View Results", copy: "Track ended election outcomes and participation." }
-];
-
-export async function renderAdminPage({ api, authStore, openAuthModal }) {
+export async function renderAdminPage({ authStore, openAuthModal }) {
   const user = authStore.getUser();
   if (!user || user.role !== "admin") {
     openAuthModal("login");
@@ -23,68 +17,105 @@ export async function renderAdminPage({ api, authStore, openAuthModal }) {
   }
 
   const statsGrid = document.getElementById("stats-grid");
-  const actionsRoot = document.getElementById("action-cards-root");
+  const statsElectionSelect = document.getElementById("stats-election-select");
+  const electionSummaryRoot = document.getElementById("election-summary-root");
   const electionRoot = document.getElementById("manage-elections-root");
   const votersRoot = document.getElementById("voters-root");
   const electionSelect = document.getElementById("candidate-election-select");
-  const chartCanvas = document.getElementById("votes-chart");
+  const countsChartCanvas = document.getElementById("counts-chart");
+  const votesChartCanvas = document.getElementById("votes-chart");
   const createElectionForm = document.getElementById("create-election-form");
   const addCandidateForm = document.getElementById("add-candidate-form");
   let elections = [];
+  let countsChart = null;
   let votesChart = null;
+  let electionStats = [];
 
-  actionsRoot.innerHTML = actionCards
-    .map(
-      (card) => `
-        <article class="surface-card action-card">
-          <h3>${card.title}</h3>
-          <p>${card.copy}</p>
-        </article>
-      `
-    )
-    .join("");
+  function getSelectedStats() {
+    if (!electionStats.length) return null;
+    return electionStats.find((item) => item.electionId === statsElectionSelect.value) || electionStats[0];
+  }
 
-  async function loadStats() {
-    const response = await api.getAdminStats();
+  function renderElectionSelect() {
+    statsElectionSelect.innerHTML = electionStats
+      .map((item) => `<option value="${item.electionId}">${item.electionName}</option>`)
+      .join("");
+  }
+
+  function renderStatsCards() {
+    const selected = getSelectedStats();
+
+    if (!selected) {
+      statsGrid.innerHTML = `<div class="surface-card empty-state">No election stats available.</div>`;
+      return;
+    }
+
+    const statsData = {
+      ...selected,
+      winnerText: selected.winner ? `${selected.winner.name} (${selected.winner.votes} votes)` : "Voting in progress"
+    };
+
     statsGrid.innerHTML = statCards
       .map(
         (stat) => `
           <article class="surface-card stat-card">
             <span>${stat.label}</span>
-            <strong>${response.data[stat.key]}</strong>
+            <strong>${statsData[stat.key]}</strong>
           </article>
         `
       )
       .join("");
   }
 
-  async function loadChart() {
-    if (!chartCanvas || !window.Chart) return;
+  function renderElectionSummaries() {
+    electionSummaryRoot.innerHTML = electionStats
+      .map(
+        (item) => `
+          <div class="list-item list-item-stack">
+            <div>
+              <strong>${item.electionName}</strong>
+              <span class="muted">
+                Candidates: ${item.totalCandidates} | Voters: ${item.registeredVoters} | Votes: ${item.totalVotesCast}
+              </span>
+            </div>
+            <div>
+              <span class="status-badge ${item.winner ? "status-ended" : "status-upcoming"}">
+                ${item.winner ? `Winner: ${item.winner.name}` : "Winner pending"}
+              </span>
+            </div>
+          </div>
+        `
+      )
+      .join("");
+  }
 
-    const targetElection =
-      elections.find((election) => election.status === "Ended") ||
-      elections.find((election) => election.status === "Active") ||
-      elections[0];
-
-    if (!targetElection) return;
-
-    const candidatesResponse = await api.getCandidates(targetElection._id);
-    const labels = candidatesResponse.data.map((candidate) => candidate.party);
-    const values = candidatesResponse.data.map((candidate, index) => candidate.votes || (index + 1) * 12);
+  function destroyCharts() {
+    if (countsChart) {
+      countsChart.destroy();
+      countsChart = null;
+    }
 
     if (votesChart) {
       votesChart.destroy();
+      votesChart = null;
     }
+  }
 
-    votesChart = new window.Chart(chartCanvas, {
+  function renderCharts() {
+    const selected = getSelectedStats();
+    if (!selected || !window.Chart) return;
+
+    destroyCharts();
+
+    countsChart = new window.Chart(countsChartCanvas, {
       type: "bar",
       data: {
-        labels,
+        labels: ["Candidates", "Voters", "Votes"],
         datasets: [
           {
-            label: "Votes",
-            data: values,
-            backgroundColor: ["#5b8cff", "#8f5dff", "#57c3a2", "#ff9b6a", "#6f78ff"],
+            label: selected.electionName,
+            data: [selected.totalCandidates, selected.registeredVoters, selected.totalVotesCast],
+            backgroundColor: ["#5b8cff", "#8f5dff", "#57c3a2"],
             borderRadius: 12,
             borderSkipped: false
           }
@@ -97,7 +128,7 @@ export async function renderAdminPage({ api, authStore, openAuthModal }) {
           legend: { display: false },
           title: {
             display: true,
-            text: `Vote Overview - ${targetElection.title}`
+            text: `Election Counts - ${selected.electionName}`
           }
         },
         scales: {
@@ -108,6 +139,40 @@ export async function renderAdminPage({ api, authStore, openAuthModal }) {
         }
       }
     });
+
+    votesChart = new window.Chart(votesChartCanvas, {
+      type: "pie",
+      data: {
+        labels: selected.candidates.map((candidate) => candidate.party || candidate.name),
+        datasets: [
+          {
+            data: selected.candidates.map((candidate) => candidate.votes),
+            backgroundColor: ["#5b8cff", "#8f5dff", "#57c3a2", "#ff9b6a", "#6f78ff"],
+            borderColor: "#ffffff",
+            borderWidth: 2
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          title: {
+            display: true,
+            text: `Vote Distribution - ${selected.electionName}`
+          }
+        }
+      }
+    });
+  }
+
+  async function loadElectionStats() {
+    const response = await api.getElectionStats();
+    electionStats = response.data;
+    renderElectionSelect();
+    renderStatsCards();
+    renderElectionSummaries();
+    renderCharts();
   }
 
   async function loadElections() {
@@ -146,8 +211,7 @@ export async function renderAdminPage({ api, authStore, openAuthModal }) {
         try {
           await api.updateElection(id, { status });
           showToast("Election updated.", "success");
-          await Promise.all([loadElections(), loadStats()]);
-          await loadChart();
+          await Promise.all([loadElections(), loadElectionStats()]);
         } catch (error) {
           showToast(error.message, "error");
         }
@@ -196,8 +260,7 @@ export async function renderAdminPage({ api, authStore, openAuthModal }) {
       await api.createElection(payload);
       createElectionForm.reset();
       showToast("Election created successfully.", "success");
-      await Promise.all([loadElections(), loadStats()]);
-      await loadChart();
+      await Promise.all([loadElections(), loadElectionStats()]);
     } catch (error) {
       showToast(error.message, "error");
     }
@@ -215,16 +278,19 @@ export async function renderAdminPage({ api, authStore, openAuthModal }) {
       addCandidateForm.reset();
       electionSelect.value = elections[0]?._id || "";
       showToast("Candidate added successfully.", "success");
-      await Promise.all([loadElections(), loadStats()]);
-      await loadChart();
+      await Promise.all([loadElections(), loadElectionStats()]);
     } catch (error) {
       showToast(error.message, "error");
     }
   });
 
+  statsElectionSelect.addEventListener("change", () => {
+    renderStatsCards();
+    renderCharts();
+  });
+
   try {
-    await Promise.all([loadStats(), loadElections(), loadVoters()]);
-    await loadChart();
+    await Promise.all([loadElections(), loadElectionStats(), loadVoters()]);
     renderNavbar("admin", user);
   } catch (error) {
     showToast(error.message, "error");

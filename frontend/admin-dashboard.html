@@ -25,15 +25,37 @@
           </div>
         </section>
 
-        <section class="stats-grid" id="stats-grid"></section>
+        <section class="surface-card admin-panel">
+          <div class="panel-header">
+            <h2>Election Performance</h2>
+            <p>Filter each election to review candidates, voters, votes, and the final winner.</p>
+          </div>
+          <div class="form-row chart-toolbar">
+            <select id="stats-election-select"></select>
+          </div>
+          <section class="stats-grid" id="stats-grid"></section>
+        </section>
+
+        <section class="surface-card admin-panel">
+          <div class="panel-header">
+            <h2>Election-Wise Summary</h2>
+            <p>See a grouped breakdown for every election instead of one global total.</p>
+          </div>
+          <div id="election-summary-root" class="admin-list"></div>
+        </section>
 
         <section class="surface-card admin-panel chart-panel">
           <div class="panel-header">
-            <h2>Party Vote Chart</h2>
-            <p>Dynamic chart preview using party vote counts with placeholder fallback values.</p>
+            <h2>Election Analytics</h2>
+            <p>The selected election updates both charts and safely destroys any previous chart instance.</p>
           </div>
-          <div class="chart-wrapper">
-            <canvas id="votes-chart"></canvas>
+          <div class="chart-grid">
+            <div class="chart-wrapper">
+              <canvas id="counts-chart"></canvas>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="votes-chart"></canvas>
+            </div>
           </div>
         </section>
 

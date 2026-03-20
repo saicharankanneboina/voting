@@ -136,10 +136,10 @@ export async function renderElectionsPage({ authStore, openAuthModal }) {
             <label class="candidate-option symbol-choice">
               <input type="radio" name="candidateId" value="${candidate._id}" />
               <span class="symbol-card">
-                <img src="${candidate.symbol || "/images/default-party.svg"}" alt="${candidate.party} symbol" class="party-symbol-image" />
+                <img src="${candidate.symbol || "/images/default-party.svg"}" alt="${candidate.name} symbol" class="party-symbol-image" />
                 <span class="candidate-copy">
                   <strong>${candidate.name}</strong>
-                  <small>${candidate.party}</small>
+                  ${candidate.party ? `<small>${candidate.party}</small>` : ""}
                 </span>
               </span>
             </label>
@@ -186,13 +186,13 @@ export async function renderElectionsPage({ authStore, openAuthModal }) {
                 (candidate) => `
                   <div class="list-item">
                     <span class="candidate-with-symbol">
-                      <img src="${candidate.symbol || "/images/default-party.svg"}" alt="${candidate.party} symbol" class="party-symbol-image small" />
+                      <img src="${candidate.symbol || "/images/default-party.svg"}" alt="${candidate.name} symbol" class="party-symbol-image small" />
                       <span class="candidate-copy">
                         <strong>${candidate.name}</strong>
-                        <small>${candidate.party}</small>
+                        ${candidate.party ? `<small>${candidate.party}</small>` : ""}
                       </span>
                     </span>
-                    <span>${candidate.votes} votes</span>
+                    ${typeof candidate.votes === "number" ? `<span>${candidate.votes} votes</span>` : `<span class="muted">Vote totals hidden</span>`}
                   </div>
                 `
               )

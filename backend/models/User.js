@@ -37,6 +37,10 @@ const userSchema = new mongoose.Schema(
       enum: ["admin", "voter"],
       required: true
     },
+    electionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Election"
+    },
     isVerified: {
       type: Boolean,
       default: false

@@ -487,6 +487,16 @@ p,
   min-height: 320px;
 }
 
+.chart-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.chart-toolbar {
+  margin-bottom: 12px;
+}
+
 .info-grid,
 .cards-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -770,7 +780,8 @@ textarea:focus {
   .action-cards-grid,
   .info-grid,
   .cards-grid,
-  .about-grid {
+  .about-grid,
+  .chart-grid {
     grid-template-columns: 1fr;
   }
 
