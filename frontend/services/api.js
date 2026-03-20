@@ -1,4 +1,4 @@
-const API_BASE = "/api";
+const API_BASE = "https://voting-backend-k085.onrender.com/api";
 const TOKEN_KEY = "smartvote_token";
 const USER_KEY = "smartvote_user";
 
