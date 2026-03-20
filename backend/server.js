@@ -21,7 +21,7 @@ const MONGODB_URI = process.env.MONGODB_URI;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "..", "frontend")));
+
 
 app.get("/api/health", (req, res) => {
   res.json({ success: true, message: "SmartVote API is running." });
@@ -31,17 +31,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/elections", electionRoutes);
 app.use("/api/admin", adminRoutes);
 
-app.get("/admin-dashboard", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "frontend", "admin-dashboard.html"));
-});
-
-app.get("/elections", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "frontend", "elections.html"));
-});
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "frontend", "index.html"));
-});
 
 async function startServer() {
   try {
