@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartVote Elections</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body data-page="elections">
+    <div class="site-shell">
+      <header id="navbar-root"></header>
+      <main class="page-content">
+        <section class="page-heading">
+          <div>
+            <span class="eyebrow">Election Center</span>
+            <h1>Browse and participate in active elections</h1>
+            <p>Switch between ongoing, upcoming, and past elections with role-aware actions.</p>
+          </div>
+        </section>
+
+        <section class="tabs-bar" id="tabs-root"></section>
+        <section class="cards-grid" id="elections-grid"></section>
+      </main>
+    </div>
+
+    <div id="auth-modal-root"></div>
+    <div id="drawer-root"></div>
+
+    <script type="module" src="/App.js"></script>
+  </body>
+</html>

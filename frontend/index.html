@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartVote - Online Voting System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body data-page="home">
+    <div class="site-shell">
+      <header id="navbar-root"></header>
+      <main>
+        <section class="hero-section">
+          <div class="hero-copy surface-card glow-card">
+            <span class="eyebrow brand-eyebrow">
+              <span class="brand-mark">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"></path>
+                  <path d="m9 12 2 2 4-5"></path>
+                </svg>
+              </span>
+              <span>SmartVote</span>
+            </span>
+            <h1>Online Voting Management System</h1>
+            <p>Participate in democratic elections with transparency and security.</p>
+            <div class="hero-actions">
+              <a class="btn btn-primary btn-icon" href="/elections">
+                <span class="button-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"></path>
+                    <path d="m9 12 2 2 4-5"></path>
+                  </svg>
+                </span>
+                <span>Vote Now</span>
+              </a>
+              <button class="btn btn-secondary btn-icon" id="hero-results-btn" type="button">
+                <span class="button-icon">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 19V10"></path>
+                    <path d="M12 19V5"></path>
+                    <path d="M19 19v-7"></path>
+                  </svg>
+                </span>
+                <span>View Results</span>
+              </button>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <div class="voting-network" aria-hidden="true">
+              <div class="network-glow glow-top"></div>
+              <div class="network-glow glow-bottom"></div>
+              <div class="network-lines">
+                <span class="network-line diagonal-left"></span>
+                <span class="network-line diagonal-right"></span>
+                <span class="network-line vertical-link"></span>
+                <span class="network-line horizontal-link"></span>
+              </div>
+              <div class="network-user user-top"></div>
+              <div class="network-user user-left"></div>
+              <div class="network-center">
+                <div class="ballot-card">
+                  <span class="ballot-slot"></span>
+                  <span class="ballot-paper">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"></path>
+                      <path d="m9 12 2 2 4-5"></path>
+                    </svg>
+                  </span>
+                </div>
+              </div>
+              <div class="network-user user-right"></div>
+              <div class="network-user user-bottom"></div>
+            
+          </div>
+        </section>
+
+      </main>
+
+      <footer class="about-section" id="about">
+        <div class="about-copy">
+          <span class="eyebrow brand-eyebrow">
+            <span class="brand-mark">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"></path>
+                 <path d="M9 12l2 2 4-4.5"></path>
+              </svg>
+            </span>
+            <span>SmartVote</span>
+          </span>
+          <h2>SmartVote: Online Voting Management System</h2>
+          <p>Deliver transparency, security, and role-based access across the complete election flow.</p>
+        </div>
+        <div class="about-grid">
+          <article class="surface-card feature-box">
+            <h3>Transparent Elections</h3>
+            <p>Every election is managed with clear status updates, candidate visibility, and auditable outcomes.</p>
+          </article>
+          <article class="surface-card feature-box">
+            <h3>Role-Based Access</h3>
+            <p>Admins manage operations while verified voters get a focused and secure voting experience.</p>
+          </article>
+          <article class="surface-card feature-box">
+            <h3>Secure Voting</h3>
+            <p>JWT sessions, hashed passwords, and one-vote-per-election protection keep ballots trustworthy.</p>
+          </article>
+        </div>
+      </footer>
+    </div>
+
+    <div id="auth-modal-root"></div>
+
+    <script type="module" src="/App.js"></script>
+  </body>
+</html>

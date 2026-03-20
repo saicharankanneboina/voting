@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartVote Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body data-page="admin">
+    <div class="site-shell">
+      <header id="navbar-root"></header>
+      <main class="page-content">
+        <section class="page-heading admin-heading">
+          <div>
+            <span class="eyebrow">Admin Control Panel</span>
+            <h1>Manage elections, candidates, voters, and final outcomes</h1>
+            <p>SmartVote gives administrators a unified workspace for secure election operations.</p>
+          </div>
+        </section>
+
+        <section class="stats-grid" id="stats-grid"></section>
+
+        <section class="surface-card admin-panel chart-panel">
+          <div class="panel-header">
+            <h2>Party Vote Chart</h2>
+            <p>Dynamic chart preview using party vote counts with placeholder fallback values.</p>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="votes-chart"></canvas>
+          </div>
+        </section>
+
+        <section class="admin-layout">
+          <div class="surface-card admin-panel">
+            <div class="panel-header">
+              <h2>Create Election</h2>
+              <p>Launch a new election with schedule, type, and status controls.</p>
+            </div>
+            <form id="create-election-form" class="stack-form">
+              <input name="title" type="text" placeholder="Election title" required />
+              <textarea name="description" placeholder="Election description" rows="4" required></textarea>
+              <div class="form-row">
+                <input name="date" type="date" required />
+                <select name="type" required>
+                  <option value="General">General</option>
+                  <option value="Local">Local</option>
+                  <option value="University">University</option>
+                </select>
+              </div>
+              <select name="status" required>
+                <option value="Upcoming">Upcoming</option>
+                <option value="Active">Active</option>
+                <option value="Ended">Ended</option>
+              </select>
+              <button class="btn btn-primary" type="submit">Create Election</button>
+            </form>
+          </div>
+
+          <div class="surface-card admin-panel">
+            <div class="panel-header">
+              <h2>Add Candidate</h2>
+              <p>Attach candidates to an election and prepare ballots.</p>
+            </div>
+            <form id="add-candidate-form" class="stack-form">
+              <input name="name" type="text" placeholder="Candidate name" required />
+              <input name="party" type="text" placeholder="Party name" required />
+              <input name="symbol" type="text" placeholder="Symbol path e.g. /images/default-party.svg" />
+              <select name="electionId" id="candidate-election-select" required></select>
+              <button class="btn btn-primary" type="submit">Add Candidate</button>
+            </form>
+          </div>
+        </section>
+
+        <section class="action-cards-grid" id="action-cards-root"></section>
+
+        <section class="admin-layout">
+          <div class="surface-card admin-panel">
+            <div class="panel-header">
+              <h2>Manage Elections</h2>
+              <p>Update status to control visibility and results access.</p>
+            </div>
+            <div id="manage-elections-root" class="admin-list"></div>
+          </div>
+
+          <div class="surface-card admin-panel">
+            <div class="panel-header">
+              <h2>Verify Voters</h2>
+              <p>Approve voter accounts before they access active ballots.</p>
+            </div>
+            <div id="voters-root" class="admin-list"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="auth-modal-root"></div>
+
+    <script type="module" src="/App.js"></script>
+  </body>
+</html>
